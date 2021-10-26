@@ -298,8 +298,7 @@ format_payload(Message) ->
         {device_id, Message#message.from},
         {username, Username},
         {topic, Topic},
-        {payload, MsgPayload64},
-        {ts, emqx_time:now_secs(Message#message.timestamp)}],
+        {payload, MsgPayload64}],
 
     {ok, Payload}.
 
