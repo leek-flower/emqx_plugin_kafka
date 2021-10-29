@@ -289,7 +289,7 @@ format_payload(Message) ->
         {username, Username},
         {topic,Topic},
         {payload, MsgPayload64},
-        {timestamp:Now }
+        {timestamp,Now }
     ],
 
     {ok, Payload}.
