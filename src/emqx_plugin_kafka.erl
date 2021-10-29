@@ -287,10 +287,10 @@ format_payload(Message) ->
     Payload = [{action, message_publish},
         {clientId, Message#message.from},
         {username, Username},
-        {topic, Topic},
-        {payload, MsgPayload64,
-         timestamp:Now 
-        }],
+        {topic,Topic},
+        {payload, MsgPayload64},
+        {timestamp:Now }
+    ],
 
     {ok, Payload}.
 
