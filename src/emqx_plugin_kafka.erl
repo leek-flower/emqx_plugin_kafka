@@ -96,7 +96,7 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
     	Online = 1,
     	Payload = [
 		{action, Action}, 
-		{device_id, ClientId}, 
+		{clientId, ClientId}, 
 		{username, maps:get(username, ClientInfo)},
 		{keepalive, maps:get(keepalive, ConnInfo)},
 		{ipaddress, iolist_to_binary(ntoa(IpAddr))},
@@ -116,7 +116,7 @@ on_client_disconnected(ClientInfo = #{clientid := ClientId}, ReasonCode, ConnInf
     Online = 0,
     Payload = [
 		{action, Action}, 
-		{device_id, ClientId}, 
+		{clientId, ClientId}, 
 		{username, maps:get(username, ClientInfo)},
  		{reason, ReasonCode},
 		{timestamp, Now},
@@ -142,7 +142,7 @@ on_client_subscribe(#{clientid := ClientId}, _Properties, TopicFilters, _Env) ->
     Action = <<"subscribe">>,
     Now = calendar:datetime_to_gregorian_seconds(calendar:universal_time())-719528*24*3600,
     Payload = [
-		{device_id, ClientId},
+		{clientId, ClientId},
 		{action, Action},  
 		{topic, Topic},
 		{qos, maps:get(qos, Qos)},
@@ -157,7 +157,7 @@ on_client_unsubscribe(#{clientid := ClientId}, _Properties, TopicFilters, _Env) 
     Action = <<"unsubscribe">>,
     Now = calendar:datetime_to_gregorian_seconds(calendar:universal_time())-719528*24*3600,
     Payload = [
-		{device_id, ClientId},
+		{clientId, ClientId},
 		{action, Action},  
 		{topic, Topic},
 		{timestamp, Now}
@@ -281,24 +281,15 @@ ekaf_get_topic() ->
 format_payload(Message) ->
     Username = emqx_message:get_header(username, Message),
     Topic = Message#message.topic,
-    Tail = string:right(binary_to_list(Topic), 4),
-    RawType = string:equal(Tail, <<"_raw">>),
-    % io:format("Tail= ~s , RawType= ~s~n",[Tail,RawType]),
-
-    MsgPayload = Message#message.payload,
-    % io:format("MsgPayload : ~s~n", [MsgPayload]),
-    if
-        RawType == true ->
-            MsgPayload64 = list_to_binary(base64:encode_to_string(MsgPayload));
-    % io:format("MsgPayload64 : ~s~n", [MsgPayload64]);
-        RawType == false ->
-            MsgPayload64 = MsgPayload
-    end,
+    MsgPayload64 = list_to_binary(base64:encode_to_string(MsgPayload)),
+    Now = calendar:datetime_to_gregorian_seconds(calendar:universal_time())-719528*24*3600,
     Payload = [{action, message_publish},
-        {device_id, Message#message.from},
+        {clientId, Message#message.from},
         {username, Username},
         {topic, Topic},
-        {payload, MsgPayload64}],
+        {payload, MsgPayload64,
+         timestamp:Now 
+        }],
 
     {ok, Payload}.
 
