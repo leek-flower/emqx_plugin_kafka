@@ -99,9 +99,9 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
 		{clientId, ClientId}, 
 		{username, maps:get(username, ClientInfo)},
 		{keepalive, maps:get(keepalive, ConnInfo)},
-		{ipaddress, iolist_to_binary(ntoa(IpAddr))},
-		{proto_name, maps:get(proto_name, ConnInfo)},
-		{proto_ver, maps:get(proto_ver, ConnInfo)},
+		{ipAddress, iolist_to_binary(ntoa(IpAddr))},
+		{protoName, maps:get(proto_name, ConnInfo)},
+		{protoVersion, maps:get(proto_ver, ConnInfo)},
 		{timestamp, Now},
 		{online, Online}
     ],
