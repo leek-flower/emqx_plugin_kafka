@@ -281,6 +281,7 @@ ekaf_get_topic() ->
 format_payload(Message) ->
     Username = emqx_message:get_header(username, Message),
     Topic = Message#message.topic,
+    MsgPayload = Message#message.payload,
     MsgPayload64 = list_to_binary(base64:encode_to_string(MsgPayload)),
     Now = calendar:datetime_to_gregorian_seconds(calendar:universal_time())-719528*24*3600,
     Payload = [{action, message_publish},
